@@ -1,7 +1,7 @@
 package com.api.api.model;
 import com.api.api.model.Nota;
 import jakarta.validation.constraints.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
@@ -26,8 +26,7 @@ public class Usuario {
     cascade = CascadeType.ALL,
     orphanRemoval = true
     )
-
-   //@JsonIgnore
+    @JsonManagedReference
     private List<Nota> nota = new ArrayList<>();
     
     public Usuario() {

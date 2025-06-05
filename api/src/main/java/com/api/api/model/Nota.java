@@ -2,6 +2,7 @@ package com.api.api.model;
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "Notas")
@@ -19,8 +20,9 @@ public class Nota {
     String contenido;
     LocalDateTime fechaCreacion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
+    @JsonBackReference
     private Usuario usuario;
 
     public Nota() {
