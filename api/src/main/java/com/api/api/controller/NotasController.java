@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import jakarta.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/api/v1/notas")
@@ -22,7 +23,7 @@ public class NotasController {
 
     @GetMapping
     public ResponseEntity<List<Nota>> getAll(
-            @RequestParam(required = false) Long usuarioId,
+            @RequestParam(required = false) @Positive(message = "El ID del usuario debe ser un número positivo") Long usuarioId,
             @RequestParam(defaultValue = "asc") String order) {
         Sort.Direction dir = order.equalsIgnoreCase("desc")
                 ? Sort.Direction.DESC
@@ -34,8 +35,9 @@ public class NotasController {
     }
 
     @GetMapping("/{id}")
-    public Nota getById(@PathVariable Long id) {
-        return notaService.getById(id).orElse(null);
+    public Nota getById(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
+        return notaService.getById(id)
+                .orElseThrow(() -> new IllegalStateException("No se encontró la nota con ID: " + id));
     }
 
     @PostMapping
@@ -44,13 +46,19 @@ public class NotasController {
     }
 
     @PutMapping("/{id}")
-    public Nota update(@PathVariable Long id, @RequestBody Nota nota) {
+    public Nota update(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id, @RequestBody Nota nota) {
+        if (!notaService.getById(id).isPresent()) {
+            throw new IllegalStateException("No se encontró la nota con ID: " + id);
+        }
         nota.setId(id);
         return notaService.save(nota);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
+        if (!notaService.getById(id).isPresent()) {
+            throw new IllegalStateException("No se encontró la nota con ID: " + id);
+        }
         notaService.deleteById(id);
     }
 

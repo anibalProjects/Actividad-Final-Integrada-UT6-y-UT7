@@ -1,6 +1,7 @@
 package com.api.api.service;
 
-import org.springframework.beans.BeanUtils;
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,10 @@ public class UsuarioServiceImpl extends AbstractCrudService<Usuario, Long> imple
     @Transactional
     @Override
     public Usuario update(Long id, Usuario ent) {
-        if (!repo.existsById(id)) {
-            throw new IllegalStateException("La entidad con el ID " + id + " no existe.");
+        try {
+            return super.update(id, ent); // Llamo al metodo generico de AbstractCrudService
+        } catch (NoSuchElementException e) {
+            throw new IllegalStateException("El usuario con el ID " + id + " no existe.");
         }
-        Usuario existing = repo.findById(id).orElseThrow();
-        BeanUtils.copyProperties(ent, existing, "id");
-        return repo.save(existing);
     }
 }

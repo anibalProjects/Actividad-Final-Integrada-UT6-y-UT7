@@ -1,5 +1,4 @@
 package com.api.api.model;
-import com.api.api.model.Nota;
 import jakarta.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import jakarta.persistence.*;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Positive(message = "El ID debe ser un número positivo")
     private Long id;
     
     @NotBlank(message = "Nombre no puede estar vacio")

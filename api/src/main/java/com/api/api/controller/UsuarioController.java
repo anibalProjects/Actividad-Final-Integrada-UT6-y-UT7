@@ -18,6 +18,8 @@ import com.api.api.service.UsuarioService;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.ResponseEntity;
+import jakarta.validation.constraints.Positive;
 
 
 @RestController
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UsuarioController {
 
     private final UsuarioService usuarioSvc;
-
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     public UsuarioController(UsuarioService usuarioSvc) {
         this.usuarioSvc = usuarioSvc;
@@ -40,8 +42,9 @@ public class UsuarioController {
 
     // Listar usuario por ID
     @GetMapping("/{id}")
-    public Usuario getById(@PathVariable Long id) {
-        return usuarioSvc.getById(id).orElse(null);
+    public Usuario getById(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
+        return usuarioSvc.getById(id)
+                .orElseThrow(() -> new IllegalStateException("No se encontró el usuario con ID: " + id));
     }
 
     // Crear usuario
@@ -52,13 +55,33 @@ public class UsuarioController {
 
     // Editar Usuario por ID
     @PutMapping("/{id}")
-    public Usuario update(@PathVariable Long id, @RequestBody Usuario usuario) {
-       return usuarioSvc.update(id, usuario);
-    }
+    public ResponseEntity<?> update(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id, @RequestBody @Valid Usuario usuario) {
+        try {
+            logger.info("Actualizando usuario con ID: {}", id);
+            logger.info("Datos recibidos: {}", usuario);
+            
+            if (usuario == null) {
+                return ResponseEntity.badRequest().body("El cuerpo de la petición no puede estar vacío");
+            }
+            
+            if (!usuarioSvc.getById(id).isPresent()) {
+                throw new IllegalStateException("No se encontró el usuario con ID: " + id);
+            }
+            
+            Usuario updatedUsuario = usuarioSvc.update(id, usuario);
+            return ResponseEntity.ok(updatedUsuario);
+        } catch (Exception e) {
+            logger.error("Error al actualizar usuario: ", e);
+            return ResponseEntity.internalServerError().body("Error al actualizar usuario: " + e.getMessage());
+        }
+    }       
 
     // Borrar Usuario por ID
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
+        if (!usuarioSvc.getById(id).isPresent()) {
+            throw new IllegalStateException("No se encontró el usuario con ID: " + id);
+        }
         usuarioSvc.deleteById(id);
     }
 
