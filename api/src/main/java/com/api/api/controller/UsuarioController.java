@@ -1,5 +1,8 @@
 package com.api.api.controller;
 import java.util.List;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.api.model.Usuario;
 import com.api.api.service.UsuarioService;
 
+
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 @RestController
 @RequestMapping("/api/v1/Usuario")
 @Validated
 public class UsuarioController {
 
     private final UsuarioService usuarioSvc;
+
+    private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
 
     public UsuarioController(UsuarioService usuarioSvc) {
         this.usuarioSvc = usuarioSvc;
@@ -53,4 +62,11 @@ public class UsuarioController {
     public void delete(@PathVariable Long id) {
         usuarioSvc.deleteById(id);
     }
+
+    @GetMapping("id")
+    public Usuario update(@RequestParam Long id) {
+        log.info("Usuario actualizado con éxito");
+        return this.usuarioSvc.update(id, null);
+    }
+    
 }
