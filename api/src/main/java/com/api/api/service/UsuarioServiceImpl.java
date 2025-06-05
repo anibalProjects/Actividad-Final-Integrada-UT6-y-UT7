@@ -1,5 +1,6 @@
 package com.api.api.service;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -18,20 +19,19 @@ public class UsuarioServiceImpl extends AbstractCrudService<Usuario, Long> imple
     @Transactional
     @Override
     public Usuario update(Long id, Usuario ent) {
-        if (!repo.existsById(id)) {
-            throw new IllegalStateException("La entidad con el ID " + id + " no existe.");
-        }
-        Usuario existing = repo.findById(id).orElseThrow();
-        BeanUtils.copyProperties(ent, existing, "id");
-        return repo.save(existing);
+    try {
+        return super.update(id, ent); // Llamo al metodo generico de AbstractCrudService
+    } catch (NoSuchElementException e) {
+        throw new IllegalStateException("El usuario con el ID " + id + " no existe.");
     }
+}
 
     @Transactional(readOnly = true)
     @Override
     public List<Usuario> getAll() {
         List<Usuario> usuarios = repo.findAll();
         if (usuarios.isEmpty()) {
-            throw new IllegalStateException("No hay usuarios registrados.");
+            throw new IllegalStateException("No hay usuarios registrados");
         }
         return usuarios;
     }
@@ -41,7 +41,7 @@ public class UsuarioServiceImpl extends AbstractCrudService<Usuario, Long> imple
     public Optional<Usuario> getById(Long id) {
         Optional<Usuario> usuario = repo.findById(id);
         if (usuario.isEmpty()) {
-            throw new IllegalStateException("Usuario con ID " + id + " no encontrado.");
+            throw new IllegalStateException("Usuario con ID " + id + " no encontrado");
         }
         return usuario;
     }

@@ -15,7 +15,7 @@ public class Nota {
     String titulo;
     
     @NotBlank(message = "Contenido no puede estar vacío")
-    @Size(min = 5, max = 1000, message = "Contenido debe tener entre 5 y 1000 caracteres")
+    @Size(min = 5, max = 10000, message = "Contenido debe tener entre 5 y 10000 caracteres")
     String contenido;
     LocalDateTime fechaCreacion;
 
