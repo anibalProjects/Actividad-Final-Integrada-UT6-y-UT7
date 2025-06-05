@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.api.model.Usuario;
 import com.api.api.service.UsuarioService;
 
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,7 +27,6 @@ public class UsuarioController {
 
     private final UsuarioService usuarioSvc;
 
-    private static final Logger log = LoggerFactory.getLogger(UsuarioController.class);
 
     public UsuarioController(UsuarioService usuarioSvc) {
         this.usuarioSvc = usuarioSvc;
@@ -46,15 +46,14 @@ public class UsuarioController {
 
     // Crear usuario
     @PostMapping
-    public Usuario create(@RequestBody Usuario usuario) {
+    public Usuario create(@RequestBody @Valid Usuario usuario) {
         return usuarioSvc.save(usuario);
     }
 
     // Editar Usuario por ID
     @PutMapping("/{id}")
     public Usuario update(@PathVariable Long id, @RequestBody Usuario usuario) {
-        usuario.setId(id);
-        return usuarioSvc.save(usuario);
+       return usuarioSvc.update(id, usuario);
     }
 
     // Borrar Usuario por ID
@@ -65,7 +64,6 @@ public class UsuarioController {
 
     @GetMapping("id")
     public Usuario update(@RequestParam Long id) {
-        log.info("Usuario actualizado con éxito");
         return this.usuarioSvc.update(id, null);
     }
     

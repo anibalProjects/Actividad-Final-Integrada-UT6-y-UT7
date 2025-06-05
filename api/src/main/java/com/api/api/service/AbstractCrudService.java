@@ -36,7 +36,7 @@ public abstract class AbstractCrudService<T,ID> implements CrudService<T, ID> {
     @Override
     public T update(ID id, T ent) {
         if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("La entidad con el ID " + id + " no existe.");
+            throw new IllegalStateException("La entidad con el ID " + id + " no existe.");
         }
         T existing = repo.findById(id).orElseThrow();
         BeanUtils.copyProperties(ent, existing, "id");

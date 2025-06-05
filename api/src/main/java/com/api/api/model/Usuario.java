@@ -1,10 +1,9 @@
 package com.api.api.model;
 import com.api.api.model.Nota;
+import jakarta.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -13,17 +12,22 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @NotBlank(message = "Nombre no puede estar vacio")
+    @Size(min = 3, max = 50, message = "Nombre debe tener entre 3 y 50 caracteres")
     private String nombre;
+    
+    @Email(message = "Email debe ser valido")
     @Column(unique = true)
     private String email;
     private String passwordHash;
     
-    @OneToMany(mappedBy = "Usuario",
+    @OneToMany(mappedBy = "usuario",
     cascade = CascadeType.ALL,
     orphanRemoval = true
     )
 
-    @JsonIgnore
+   //@JsonIgnore
     private List<Nota> nota = new ArrayList<>();
     
     public Usuario() {

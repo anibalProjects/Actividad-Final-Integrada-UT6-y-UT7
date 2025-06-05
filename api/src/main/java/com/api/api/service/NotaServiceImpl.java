@@ -19,7 +19,7 @@ public class NotaServiceImpl extends AbstractCrudService<Nota, Long> implements 
     @Override
     public Nota update(Long id, Nota ent) {
         if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("La entidad con el ID " + id + " no existe.");
+            throw new IllegalStateException("La entidad con el ID " + id + " no existe.");
         }
         Nota existing = repo.findById(id).orElseThrow();
         BeanUtils.copyProperties(ent, existing, "id");

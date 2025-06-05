@@ -1,9 +1,8 @@
 package com.api.api.controller;
-
 import com.api.api.model.Nota;
 import com.api.api.repository.NotaRepository;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -27,7 +26,7 @@ public class NotasController {
     }
 
     @PostMapping
-    public Nota create(@RequestBody Nota nota) {
+    public Nota create(@RequestBody @Valid Nota nota) {
         return notaRepo.save(nota);
     }
 

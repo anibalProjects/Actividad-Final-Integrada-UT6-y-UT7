@@ -1,7 +1,6 @@
 package com.api.api.model;
-
 import java.time.LocalDateTime;
-
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,7 +9,13 @@ public class Nota {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Título no puede estar vacío")
+    @Size(min = 3, max = 100, message = "Título debe tener entre 3 y 100 caracteres")
     String titulo;
+    
+    @NotBlank(message = "Contenido no puede estar vacío")
+    @Size(min = 5, max = 1000, message = "Contenido debe tener entre 5 y 1000 caracteres")
     String contenido;
     LocalDateTime fechaCreacion;
 
