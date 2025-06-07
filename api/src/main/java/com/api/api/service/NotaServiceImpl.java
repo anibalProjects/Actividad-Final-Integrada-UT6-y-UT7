@@ -14,9 +14,27 @@ import com.api.api.repository.NotaRepository;
 @Service
 public class NotaServiceImpl extends AbstractCrudService<Nota, Long> implements NotaService {
     private final NotaRepository repo;
-   public NotaServiceImpl(NotaRepository repo) {
-       super(repo);
+    public NotaServiceImpl(NotaRepository repo) {
+        super(repo);
         this.repo = repo;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Nota> searchNotas(Long id, String titulo, String contenido, Sort sort) {
+        if (id != null) {
+            return repo.findById(id, sort);
+        }
+        if (titulo != null && contenido != null) {
+            return repo.findByTituloContainingIgnoreCaseOrContenidoContainingIgnoreCase(titulo, contenido, sort);
+        }
+        if (titulo != null) {
+            return repo.findByTituloContainingIgnoreCase(titulo, sort);
+        }
+        if (contenido != null) {
+            return repo.findByContenidoContainingIgnoreCase(contenido, sort);
+        }
+        return repo.findAll(sort);
     }
 
     
@@ -26,9 +44,10 @@ public class NotaServiceImpl extends AbstractCrudService<Nota, Long> implements 
         if (usuarioId != null) {
             return repo.findByUsuarioId(usuarioId, sort);
         }
-        return repo.findAll(sort);
+        throw new IllegalArgumentException("El usuario con el id " + usuarioId + " no existe");
     }
 
+    
     @Transactional
     @Override
     public Nota update(Long id, Nota ent) {
@@ -39,11 +58,4 @@ public class NotaServiceImpl extends AbstractCrudService<Nota, Long> implements 
         BeanUtils.copyProperties(ent, existing, "id");
         return repo.save(existing);
     }
-
-
-  
-
-
-    
-
 }

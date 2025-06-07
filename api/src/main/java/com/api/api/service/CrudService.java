@@ -13,4 +13,5 @@ public interface CrudService<T, ID> {
   T update(ID id, T entity);
   
   void deleteById(ID id);
+
 }

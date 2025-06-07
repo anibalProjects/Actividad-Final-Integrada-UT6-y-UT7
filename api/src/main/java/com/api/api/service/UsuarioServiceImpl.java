@@ -18,7 +18,7 @@ public class UsuarioServiceImpl extends AbstractCrudService<Usuario, Long> imple
     @Override
     public Usuario update(Long id, Usuario ent) {
         try {
-            return super.update(id, ent); // Llamo al metodo generico de AbstractCrudService
+            return super.update(id, ent);
         } catch (NoSuchElementException e) {
             throw new IllegalStateException("El usuario con el ID " + id + " no existe.");
         }

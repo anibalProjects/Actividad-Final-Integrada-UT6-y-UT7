@@ -10,4 +10,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+    @ExceptionHandler(EmptyRequestBodyException.class)
+    public ResponseEntity<String> handleEmptyRequestBody(EmptyRequestBodyException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

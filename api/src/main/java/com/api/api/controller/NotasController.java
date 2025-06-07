@@ -1,6 +1,5 @@
 package com.api.api.controller;
 import com.api.api.model.Nota;
-import com.api.api.repository.NotaRepository;
 import com.api.api.service.NotaService;
 
 import jakarta.validation.Valid;
@@ -8,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.validation.constraints.Positive;
 
@@ -22,15 +23,8 @@ public class NotasController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Nota>> getAll(
-            @RequestParam(required = false) @Positive(message = "El ID del usuario debe ser un número positivo") Long usuarioId,
-            @RequestParam(defaultValue = "asc") String order) {
-        Sort.Direction dir = order.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-        Sort sort = Sort.by(dir, "id");
-
-        List<Nota> resultados = notaService.searchUsuarios(usuarioId, sort);
+    public ResponseEntity<List<Nota>> getAll(){
+        List<Nota> resultados = notaService.getAll();
         return ResponseEntity.ok(resultados);
     }
 
@@ -42,6 +36,7 @@ public class NotasController {
 
     @PostMapping
     public Nota create(@RequestBody @Valid Nota nota) {
+        nota.setFechaCreacion(LocalDateTime.now());
         return notaService.save(nota);
     }
 
@@ -63,17 +58,28 @@ public class NotasController {
     }
 
     
-    @GetMapping("/buscar")
+    @GetMapping("/searchUserNote")
     public ResponseEntity<List<Nota>> search(
-            @RequestParam(required = false) Long id,
+            @RequestParam(required = true) @Positive(message = "El ID del usuario debe ser un número positivo") Long usuarioId,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String order) {
-        Sort.Direction dir = order.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+        Sort.Direction dir = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(dir, sortBy);
 
-        List<Nota> resultados = notaService.searchUsuarios(id, sort);
+        List<Nota> resultados = notaService.searchUsuarios(usuarioId, sort);
         return ResponseEntity.ok(resultados);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Nota>> searchNotas(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) String contenido,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String order) {
+        Sort.Direction dir = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(dir, sortBy);
+        List<Nota> notas = notaService.searchNotas(id, titulo, contenido, sort);
+        return ResponseEntity.ok(notas);
     }
 }

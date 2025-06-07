@@ -34,34 +34,30 @@ public class UsuarioController {
         this.usuarioSvc = usuarioSvc;
     }
 
-    // Listar usuario
     @GetMapping
     public List<Usuario> getAll() {
         return usuarioSvc.getAll();
     }
 
-    // Listar usuario por ID
     @GetMapping("/{id}")
     public Usuario getById(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
         return usuarioSvc.getById(id)
                 .orElseThrow(() -> new IllegalStateException("No se encontró el usuario con ID: " + id));
     }
 
-    // Crear usuario
     @PostMapping
     public Usuario create(@RequestBody @Valid Usuario usuario) {
         return usuarioSvc.save(usuario);
     }
 
-    // Editar Usuario por ID
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id, @RequestBody @Valid Usuario usuario) {
         try {
-            logger.info("Actualizando usuario con ID: {}", id);
-            logger.info("Datos recibidos: {}", usuario);
+            logger.info("Usuario actualizado, id: {}", id);
+            logger.info("Datos: {}", usuario);
             
             if (usuario == null) {
-                return ResponseEntity.badRequest().body("El cuerpo de la petición no puede estar vacío");
+                throw new IllegalStateException("El usuario no puede estar vacío");
             }
             
             if (!usuarioSvc.getById(id).isPresent()) {
@@ -76,7 +72,6 @@ public class UsuarioController {
         }
     }       
 
-    // Borrar Usuario por ID
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
         if (!usuarioSvc.getById(id).isPresent()) {
