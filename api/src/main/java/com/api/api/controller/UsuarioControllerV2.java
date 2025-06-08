@@ -23,7 +23,7 @@ public class UsuarioControllerV2 {
             usuario.setPasswordHash(AuthenticatorController.hashPassword(usuario.getPasswordHash()));
             return usuarioSvc.save(usuario);
         } else {
-            throw new IllegalArgumentException("No se pude crear el usuario");
+            throw new IllegalStateException("No se pude crear el usuario");
         }
     }
 }

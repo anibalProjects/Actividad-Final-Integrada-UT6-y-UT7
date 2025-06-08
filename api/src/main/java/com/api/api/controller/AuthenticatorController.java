@@ -7,12 +7,16 @@ import java.security.NoSuchAlgorithmException;
 public class AuthenticatorController {
     
     public static boolean verifyValidEmail(String correo) {
+        if (!correo.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
+            System.out.println("Hey");
+            throw new IllegalStateException("El email no cumple con las condiciones");
+        }
         return correo.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
     }
 
     public static boolean verifyValidPassword(String password) {
         if (password.length() < 6){ 
-            return false; 
+            throw new IllegalStateException("La contraseña no cumple con las condiciones");
         } else {
             return true;
         }

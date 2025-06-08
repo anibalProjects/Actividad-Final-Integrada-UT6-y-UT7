@@ -18,7 +18,7 @@ public class Usuario {
     @Size(min = 3, max = 50, message = "Nombre debe tener entre 3 y 50 caracteres")
     private String nombre;
 
-    @Email(message = "Email debe ser valido")
+    //@Email(message = "Email debe ser valido")
     @Column(unique = true)
     private String email;
     private String passwordHash;
@@ -35,9 +35,6 @@ public class Usuario {
         this.nombre = nombre;
         this.email = email;
         this.passwordHash = passwordHash;
-        if (nota != null) {
-            nota.forEach(this::addNota);
-        }
     }
 
     public Long getId() {
@@ -77,27 +74,6 @@ public class Usuario {
     }
 
     public void setNota(List<Nota> notas) {
-        if (this.nota == null) {
-            this.nota = new ArrayList<>();
-        }
-        this.nota.clear();
-        if (notas != null) {
-            notas.forEach(this::addNota);
-        }
-    }
-
-    public void addNota(Nota nota) {
-        if (this.nota == null) {
-            this.nota = new ArrayList<>();
-        }
-        this.nota.add(nota);
-        nota.setUsuario(this);
-    }
-
-    public void removeNota(Nota nota) {
-        if (this.nota != null) {
-            this.nota.remove(nota);
-            nota.setUsuario(null);
-        }
+        this.nota = notas;
     }
 }

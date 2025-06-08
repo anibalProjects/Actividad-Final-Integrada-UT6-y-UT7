@@ -17,7 +17,6 @@ import com.api.api.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.constraints.Positive;
 
@@ -51,9 +50,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id, @RequestBody @Valid Usuario usuario) {
+    public ResponseEntity<?> update(@PathVariable @Positive(message = "El id debe ser un número positivo") Long id, @RequestBody @Valid Usuario usuario) {
         try {
-            logger.info("Usuario actualizado, id: {}", id);
+            logger.info("Intento de actualizar usuario, id: {}", id);
             logger.info("Datos: {}", usuario);
             
             if (usuario == null) {
@@ -61,7 +60,7 @@ public class UsuarioController {
             }
             
             if (!usuarioSvc.getById(id).isPresent()) {
-                throw new IllegalStateException("No se encontró el usuario con ID: " + id);
+                throw new IllegalStateException("No se encontró el usuario con id: " + id);
             }
             
             Usuario updatedUsuario = usuarioSvc.update(id, usuario);
@@ -73,16 +72,12 @@ public class UsuarioController {
     }       
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
+    public void delete(@PathVariable @Positive(message = "El id debe ser un número positivo") Long id) {
         if (!usuarioSvc.getById(id).isPresent()) {
-            throw new IllegalStateException("No se encontró el usuario con ID: " + id);
+            logger.info("Intento de eliminación de usuario fallido: {}", id);
+            throw new IllegalStateException("No se encontró el usuario con id: " + id);
         }
+        logger.info("Usuario eliminado, id: {}", id);
         usuarioSvc.deleteById(id);
     }
-
-    @GetMapping("id")
-    public Usuario update(@RequestParam Long id) {
-        return this.usuarioSvc.update(id, null);
-    }
-    
 }

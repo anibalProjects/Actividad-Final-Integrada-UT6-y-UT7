@@ -36,7 +36,7 @@ public abstract class AbstractCrudService<T,ID> implements CrudService<T, ID> {
     @Override
     public T update(ID id, T ent) {
         T existing = repo.findById(id).orElseThrow();
-        BeanUtils.copyProperties(ent, existing, "id");
+        BeanUtils.copyProperties(ent, existing, "id", "nota");
         return repo.save(existing);
     }
 

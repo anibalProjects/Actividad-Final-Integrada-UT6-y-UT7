@@ -44,7 +44,7 @@ public class NotaServiceImpl extends AbstractCrudService<Nota, Long> implements 
         if (usuarioId != null) {
             return repo.findByUsuarioId(usuarioId, sort);
         }
-        throw new IllegalArgumentException("El usuario con el id " + usuarioId + " no existe");
+        throw new IllegalStateException("El usuario con el id " + usuarioId + " no existe");
     }
 
     
