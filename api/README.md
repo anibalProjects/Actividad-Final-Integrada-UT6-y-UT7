@@ -212,35 +212,111 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
 - Logging de operaciones
 
 ## Ejemplos de Uso
+## Pruebas de Endpoints
 
-### Crear un usuario
+A continuación se muestra una plantilla para probar todos los endpoints principales de la API usando curl. Puedes copiar y pegar cada bloque en tu terminal y modificar los valores según tus necesidades.
+
+---
+
+### Usuarios
+
+#### Crear usuario
+![Crear usuario](src/images/1%20post%20user.png)
 ```bash
 curl -X POST http://localhost:8080/api/v1/Usuario \
 -H "Content-Type: application/json" \
 -d '{
-    "nombre": "Usuario Ejemplo",
-    "email": "usuario@ejemplo.com",
-    "passwordHash": "contraseña123"
+  "nombre": "Nuevo Usuario",
+  "email": "nuevo@email.com",
+  "passwordHash": "contraseña123"
 }'
 ```
 
-### Crear una nota
+#### Obtener todos los usuarios
+![Obtener todos los usuarios](src/images/3%20getAll%20user.png)
+```bash
+curl -X GET http://localhost:8080/api/v1/Usuario
+```
+
+#### Obtener usuario por ID
+![Obtener usuario por ID](src/images/get%20user%20by%20id.png)
+```bash
+curl -X GET http://localhost:8080/api/v1/Usuario/1
+```
+
+#### Actualizar usuario
+![Actualizar usuario](src/images/4%20put%20user.png)
+```bash
+curl -X PUT http://localhost:8080/api/v1/Usuario/1 \
+-H "Content-Type: application/json" \
+-d '{
+  "nombre": "Usuario Actualizado",
+  "email": "actualizado@email.com",
+  "passwordHash": "nuevaContraseña"
+}'
+```
+
+#### Eliminar usuario
+![Eliminar usuario](src/images/5%20delete%20user.png)
+```bash
+curl -X DELETE http://localhost:8080/api/v1/Usuario/1
+```
+
+---
+
+### Notas
+
+#### Crear nota
+![Crear nota](src/images/2%20post%20note.png)
 ```bash
 curl -X POST http://localhost:8080/api/v1/notas \
 -H "Content-Type: application/json" \
 -d '{
-    "titulo": "Mi Nota",
-    "contenido": "Contenido de la nota",
-    "usuario": {
-        "id": 1
-    }
+  "titulo": "Nueva Nota",
+  "contenido": "Contenido de la nota",
+  "usuario": {
+    "id": 1
+  }
 }'
 ```
 
-### Obtener notas de un usuario
+#### Obtener todas las notas
+![Obtener todas las notas](src/images/get%20all%20notes.png)
 ```bash
-curl -X GET "http://localhost:8080/api/v1/notas?usuarioId=1&order=desc"
+curl -X GET http://localhost:8080/api/v1/notas
 ```
+
+#### Buscar notas de un usuario (filtrado)
+![Obtener notas de un usuario](src/images/get%20note%20by%20user%20id.png)
+```bash
+curl -X GET "http://localhost:8080/api/v1/notas?usuarioId=1"
+```
+
+#### Obtener nota por ID
+![Obtener nota por ID](src/images/get%20note%20by%20id.png)
+```bash
+curl -X GET http://localhost:8080/api/v1/notas/1
+```
+
+#### Buscar notas por título, contenido o ID
+![Buscar notas por título o contenido](src/images/6%20search%20note.png)
+```bash
+# Buscar por título
+curl -X GET "http://localhost:8080/api/v1/notas/search?titulo=importante"
+
+# Buscar por contenido
+curl -X GET "http://localhost:8080/api/v1/notas/search?contenido=tarea"
+
+# Buscar por ID
+curl -X GET "http://localhost:8080/api/v1/notas/search?id=1"
+
+# Buscar por título y contenido (cualquiera de los dos que coincida)
+curl -X GET "http://localhost:8080/api/v1/notas/search?titulo=importante&contenido=tarea"
+
+# Buscar y ordenar por fechaCreacion descendente
+curl -X GET "http://localhost:8080/api/v1/notas/search?titulo=importante&sortBy=fechaCreacion&order=desc"
+```
+
 
 ## Consideraciones de Seguridad
 - Validación de datos de entrada
