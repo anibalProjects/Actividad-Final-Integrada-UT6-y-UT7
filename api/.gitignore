@@ -32,5 +32,3 @@ build/
 ### VS Code ###
 .vscode/
 
-# Ignorar imágenes de documentación
-src/images/
