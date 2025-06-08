@@ -4,6 +4,8 @@ import com.api.api.service.NotaService;
 
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import jakarta.validation.constraints.Positive;
 public class NotasController {
 
     private final NotaService notaService;
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioControllerV2.class);
 
     public NotasController(NotaService notaService) {
         this.notaService = notaService;
@@ -43,6 +46,7 @@ public class NotasController {
     @PutMapping("/{id}")
     public Nota update(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id, @RequestBody Nota nota) {
         if (!notaService.getById(id).isPresent()) {
+            logger.info("No se encontró la nota, id: {}", id);
             throw new IllegalStateException("No se encontró la nota con ID: " + id);
         }
         nota.setId(id);
@@ -52,6 +56,7 @@ public class NotasController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive(message = "El ID debe ser un número positivo") Long id) {
         if (!notaService.getById(id).isPresent()) {
+            logger.info("No se encontró la nota, id: {}", id);
             throw new IllegalStateException("No se encontró la nota con ID: " + id);
         }
         notaService.deleteById(id);
